@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import OpenAPIURLSession
 
 struct ContentView: View {
     var body: some View {
@@ -22,13 +21,17 @@ struct ContentView: View {
             Button("Get carriers") {
                 getCarriers()
             }
+            
+            Button("Get stations list") {
+                getStationsList()
+            }
         }
         .padding()
     }
 }
 
 private func getNearestStations() {
-    let client = createClient()
+    let client = СlientCreator.create()
     guard let client else { return }
     
     let service = NearestStationsService(
@@ -51,7 +54,7 @@ private func getNearestStations() {
 }
 
 private func getNearestSettlement() {
-    let client = createClient()
+    let client = СlientCreator.create()
     guard let client else { return }
     
     let service = NearestSettlementService(
@@ -74,7 +77,7 @@ private func getNearestSettlement() {
 }
 
 private func getCarriers() {
-    let client = createClient()
+    let client = СlientCreator.create()
     guard let client else { return }
     
     let service = CarriersService(
@@ -95,23 +98,24 @@ private func getCarriers() {
     }
 }
 
-private func createClient() -> Client? {
-    var url: URL?
+private func getStationsList() {
+    let client = СlientCreator.create()
+    guard let client else { return }
     
-    do {
-        url = try Servers.Server1.url()
-    } catch {
-        print(String(describing: error))
-    }
-    
-    guard let url else { return nil }
-    
-    let client = Client(
-        serverURL: url,
-        transport: URLSessionTransport()
+    let service = StationsListService(
+        client: client,
+        apikey: ServicesConstants.apikey
     )
     
-    return client
+    Task {
+        do {
+            let stationsList = try await service.getStationsList()
+            guard let stationsList else { return }
+            print(stationsList)
+        } catch {
+            print("error response: \(error.localizedDescription)")
+        }
+    }
 }
 
 #Preview {

@@ -886,6 +886,3 @@ components:
           type: string
         yandex_code:
           type: string
-
-
-
