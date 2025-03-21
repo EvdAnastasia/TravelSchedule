@@ -25,6 +25,14 @@ struct ContentView: View {
             Button("Get stations list") {
                 getStationsList()
             }
+            
+            Button("Get copyright") {
+                getCopyright()
+            }
+            
+            Button("Get search result") {
+                getSearchResult()
+            }
         }
         .padding()
     }
@@ -112,6 +120,48 @@ private func getStationsList() {
             let stationsList = try await service.getStationsList()
             guard let stationsList else { return }
             print(stationsList)
+        } catch {
+            print("error response: \(error.localizedDescription)")
+        }
+    }
+}
+
+private func getCopyright() {
+    let client = СlientCreator.create()
+    guard let client else { return }
+    
+    let service = CopyrightService(
+        client: client,
+        apikey: ServicesConstants.apikey
+    )
+    
+    Task {
+        do {
+            let copyright = try await service.getCopyright()
+            print(copyright)
+        } catch {
+            print("error response: \(error.localizedDescription)")
+        }
+    }
+}
+
+private func getSearchResult() {
+    let client = СlientCreator.create()
+    guard let client else { return }
+    
+    let service = SearchService(
+        client: client,
+        apikey: ServicesConstants.apikey
+    )
+    
+    Task {
+        do {
+            let searchResult = try await service.getSearchResult(
+                from: "c146",
+                to: "c213",
+                date: "2025-03-16"
+            )
+            print(searchResult)
         } catch {
             print("error response: \(error.localizedDescription)")
         }

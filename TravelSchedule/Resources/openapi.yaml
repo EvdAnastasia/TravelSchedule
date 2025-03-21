@@ -122,13 +122,13 @@ paths:
         description: сдвиг относительно первого рейса в ответе
         required: false
         schema:
-          type: string
+          type: integer
       - name: limit
         in: query
         description: ограничение на количество рейсов в ответе
         required: false
         schema:
-          type: string
+          type: integer
       - name: add_days_mask
         in: query
         description: запрос календаря хождения рейсов
@@ -438,7 +438,7 @@ paths:
       - name: format
         in: query
         description: формат
-        required: true
+        required: false
         schema:
           type: string
       responses:
