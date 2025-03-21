@@ -33,6 +33,14 @@ struct ContentView: View {
             Button("Get search result") {
                 getSearchResult()
             }
+            
+            Button("Get schedule") {
+                getSchedule()
+            }
+            
+            Button("Get thread") {
+                getThread()
+            }
         }
         .padding()
     }
@@ -162,6 +170,44 @@ private func getSearchResult() {
                 date: "2025-03-16"
             )
             print(searchResult)
+        } catch {
+            print("error response: \(error.localizedDescription)")
+        }
+    }
+}
+
+private func getSchedule() {
+    let client = СlientCreator.create()
+    guard let client else { return }
+    
+    let service = ScheduleService(
+        client: client,
+        apikey: ServicesConstants.apikey
+    )
+    
+    Task {
+        do {
+            let schedule = try await service.getSchedule(station: "s9600213")
+            print(schedule)
+        } catch {
+            print("error response: \(error.localizedDescription)")
+        }
+    }
+}
+
+private func getThread() {
+    let client = СlientCreator.create()
+    guard let client else { return }
+    
+    let service = ThreadService(
+        client: client,
+        apikey: ServicesConstants.apikey
+    )
+    
+    Task {
+        do {
+            let thread = try await service.getThread(uid: "092S_7_2")
+            print(thread)
         } catch {
             print("error response: \(error.localizedDescription)")
         }
