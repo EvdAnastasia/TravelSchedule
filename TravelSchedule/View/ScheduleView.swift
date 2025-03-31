@@ -9,7 +9,10 @@ import SwiftUI
 
 struct ScheduleView: View {
     var body: some View {
-        Text("Schedule")
+        ZStack {
+            Color.ypWhite.ignoresSafeArea()
+            Text("Schedule")
+        }
     }
 }
 

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct MainView: View {
+    @AppStorage(Constants.isDarkMode) private var isDarkMode = false
     
     init() {
         let appearance = UITabBarAppearance()
@@ -18,22 +19,21 @@ struct MainView: View {
     }
     
     var body: some View {
-        ZStack(alignment: .top) {
-            TabView {
-                ScheduleView()
-                    .tabItem {
-                        Image("Schedule")
-                            .renderingMode(.template)
-                    }
-                
-                SettingsView()
-                    .tabItem {
-                        Image("Settings")
-                            .renderingMode(.template)
-                    }
-            }
-            .tint(.ypBlack)
+        TabView {
+            ScheduleView()
+                .tabItem {
+                    Image("Schedule")
+                        .renderingMode(.template)
+                }
+            
+            SettingsView()
+                .tabItem {
+                    Image("Settings")
+                        .renderingMode(.template)
+                }
         }
+        .tint(.ypBlack)
+        .preferredColorScheme(isDarkMode ? .dark : .light)
     }
 }
 
