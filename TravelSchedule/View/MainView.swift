@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct MainView: View {
+    @StateObject private var routerManager = NavigationRouter()
     @AppStorage(Constants.isDarkMode) private var isDarkMode = false
     
     init() {
@@ -19,18 +20,22 @@ struct MainView: View {
     }
     
     var body: some View {
-        TabView {
-            ScheduleView()
-                .tabItem {
-                    Image("Schedule")
-                        .renderingMode(.template)
-                }
-            
-            SettingsView()
-                .tabItem {
-                    Image("Settings")
-                        .renderingMode(.template)
-                }
+        NavigationStack(path: $routerManager.routes) {
+            TabView {
+                ScheduleView()
+                    .tabItem {
+                        Image("Schedule")
+                            .renderingMode(.template)
+                    }
+                
+                SettingsView()
+                    .tabItem {
+                        Image("Settings")
+                            .renderingMode(.template)
+                    }
+            }
+            .environmentObject(routerManager)
+            .navigationDestination(for: Route.self) { $0 }
         }
         .tint(.ypBlack)
         .preferredColorScheme(isDarkMode ? .dark : .light)

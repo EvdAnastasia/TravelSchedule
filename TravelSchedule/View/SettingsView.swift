@@ -8,47 +8,39 @@
 import SwiftUI
 
 struct SettingsView: View {
+    @EnvironmentObject var routerManager: NavigationRouter
     @AppStorage(Constants.isDarkMode) private var isDarkMode = false
-    @State private var path: [String] = []
     
     var body: some View {
-        NavigationStack(path: $path) {
-            ZStack {
-                Color.ypWhite.ignoresSafeArea()
-                
-                VStack {
-                    Toggle("Темная тема", isOn: $isDarkMode)
-                        .toggleStyle(SwitchToggleStyle(tint: .ypBlue))
-                        .frame(height: 60)
-                    
-                    HStack() {
-                        Text("Пользовательское соглашение")
-                        Spacer()
-                        Image("Chevron")
-                    }
+        ZStack {
+            Color.ypWhite.ignoresSafeArea()
+            
+            VStack {
+                Toggle("Темная тема", isOn: $isDarkMode)
+                    .toggleStyle(SwitchToggleStyle(tint: .ypBlue))
                     .frame(height: 60)
-                    .onTapGesture {
-                        path.append(Constants.userAgreementView)
-                    }
-                    
+                
+                HStack() {
+                    Text("Пользовательское соглашение")
                     Spacer()
-                    
-                    VStack(spacing: 16) {
-                        Text("Приложение использует API «Яндекс.Расписания»")
-                        Text("Версия 1.0 (beta)")
-                    }
-                    .font(.system(size: 12, weight: .regular))
+                    Image("Chevron")
                 }
-                .navigationDestination(for: String.self) { id in
-                    if id == Constants.userAgreementView {
-                        UserAgreementView()
-                            .toolbar(.hidden, for: .tabBar)
-                    }
+                .frame(height: 60)
+                .onTapGesture {
+                    routerManager.push(to: .userAgreement)
                 }
-                .foregroundStyle(.ypBlack)
-                .padding([.top, .bottom], 24)
-                .padding([.leading, .trailing], 16)
+                
+                Spacer()
+                
+                VStack(spacing: 16) {
+                    Text("Приложение использует API «Яндекс.Расписания»")
+                    Text("Версия 1.0 (beta)")
+                }
+                .font(.system(size: 12, weight: .regular))
             }
+            .foregroundStyle(.ypBlack)
+            .padding([.top, .bottom], 24)
+            .padding([.leading, .trailing], 16)
         }
     }
 }
