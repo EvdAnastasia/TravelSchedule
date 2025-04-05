@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ScheduleView: View {
+    @EnvironmentObject var routerManager: NavigationRouter
+    
     var body: some View {
         ZStack {
             Color.ypWhite.ignoresSafeArea()
@@ -18,7 +20,13 @@ struct ScheduleView: View {
                     HStack(spacing: 16) {
                         VStack(alignment: .leading, spacing: 0) {
                             ChoosingDirectionView(placeholder: "Откуда")
+                                .onTapGesture {
+                                    routerManager.push(to: .citySelection)
+                                }
                             ChoosingDirectionView(placeholder: "Куда")
+                                .onTapGesture {
+                                    routerManager.push(to: .citySelection)
+                                }
                         }
                         .font(.system(size: 17, weight: .regular))
                         .background(
@@ -34,7 +42,6 @@ struct ScheduleView: View {
                                 .background(.ypWhiteUniversal)
                                 .cornerRadius(40)
                         }
-                        
                     }
                     .padding(16)
                 }
@@ -53,7 +60,6 @@ struct ScheduleView: View {
                         .cornerRadius(16)
                 }
                 .opacity(0)
-                
             }
         }
     }

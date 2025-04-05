@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct MainView: View {
+    @StateObject private var viewModel = ScheduleViewModel()
     @StateObject private var routerManager = NavigationRouter()
     @AppStorage(Constants.isDarkMode) private var isDarkMode = false
     
@@ -34,6 +35,7 @@ struct MainView: View {
                             .renderingMode(.template)
                     }
             }
+            .environmentObject(viewModel)
             .environmentObject(routerManager)
             .navigationDestination(for: Route.self) { $0 }
         }
@@ -44,4 +46,5 @@ struct MainView: View {
 
 #Preview {
     MainView()
+        .environmentObject(ScheduleViewModel())
 }
