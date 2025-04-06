@@ -19,6 +19,7 @@ final class ScheduleViewModel: ObservableObject {
         Task { await getSettlements() }
     }
     
+    @MainActor
     private func getSettlements() async {
         do {
             let allStations = try await dataProvider.getStationsList()

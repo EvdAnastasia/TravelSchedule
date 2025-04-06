@@ -21,19 +21,38 @@ struct CitySelectionView: View {
         ZStack {
             Color.ypWhite.ignoresSafeArea()
             
-            ScrollView {
-                LazyVStack(alignment: .leading) {
-                    ForEach(searchResults, id: \.self) { settlement in
-                        ListRowView(settlement: settlement.title ?? "")
+            VStack {
+                SearchBar(searchText: $searchString)
+                
+                if !searchResults.isEmpty {
+                    ScrollView {
+                        LazyVStack(alignment: .leading) {
+                            ForEach(searchResults, id: \.self) { settlement in
+                                ListRowView(settlement: settlement.title ?? "")
+                            }
+                        }
+                        .padding(.horizontal, 16)
                     }
+                    .onTapGesture {
+                        hideKeyboard()
+                    }
+                    .scrollIndicators(.hidden)
+                } else {
+                    Spacer()
+                    NotFoundView(text: "Город не найден")
+                        .onTapGesture {
+                            hideKeyboard()
+                        }
                 }
-                .padding(.horizontal, 16)
             }
-            .scrollIndicators(.hidden)
         }
         .navigationTitle("Выбор города")
         .navigationBarTitleDisplayMode(.inline)
         .foregroundStyle(.ypBlack)
+    }
+    
+    private func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
 

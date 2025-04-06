@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ScheduleView: View {
     @EnvironmentObject var routerManager: NavigationRouter
+    @EnvironmentObject private var viewModel: ScheduleViewModel
     
     var body: some View {
         ZStack {
