@@ -11,6 +11,11 @@ struct CitySelectionView: View {
     @EnvironmentObject private var viewModel: ScheduleViewModel
     @EnvironmentObject var routerManager: NavigationRouter
     @State private var searchString: String = ""
+    private var direction: Direction
+    
+    init(direction: Direction) {
+        self.direction = direction
+    }
     
     var searchResults: [SettlementsFromStationsList] {
         viewModel.settlements.filter {
@@ -31,8 +36,9 @@ struct CitySelectionView: View {
                             ForEach(searchResults, id: \.self) { settlement in
                                 ListRowView(text: settlement.title ?? "")
                                     .onTapGesture {
+                                        viewModel.setSettlement(for: direction, settlement: settlement)
                                         viewModel.getStations(for: settlement)
-                                        routerManager.push(to: .stationSelection)
+                                        routerManager.push(to: .stationSelection(direction: direction))
                                     }
                             }
                         }
@@ -62,6 +68,6 @@ struct CitySelectionView: View {
 }
 
 #Preview {
-    CitySelectionView()
+    CitySelectionView(direction: .from)
         .environmentObject(ScheduleViewModel())
 }

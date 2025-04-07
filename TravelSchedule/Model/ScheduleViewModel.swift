@@ -15,10 +15,42 @@ typealias Stations = Components.Schemas.StationsFromStationsList
 final class ScheduleViewModel: ObservableObject {
     @Published var settlements: [SettlementsFromStationsList] = []
     @Published var stations: [Stations] = []
+    @Published var directionFrom = DirectionPath(settlement: nil, station: nil)
+    @Published var directionTo = DirectionPath(settlement: nil, station: nil)
     private let dataProvider = DataProvider()
     
     init() {
         Task { await getSettlements() }
+    }
+    
+    func getStations(for settlement: SettlementsFromStationsList) {
+        let allStations = settlement.stations ?? []
+        stations = allStations.filter { $0.station_type == "train_station" || $0.transport_type == "train" }
+        stations.sort {$0.title ?? "" < $1.title ?? "" }
+    }
+    
+    func setSettlement(for direction: Direction, settlement: SettlementsFromStationsList) {
+        switch direction {
+        case .from:
+            directionFrom.settlement = settlement
+            directionFrom.station = nil
+        case .to:
+            directionTo.settlement = settlement
+            directionTo.station = nil
+        }
+    }
+    
+    func setStation(for direction: Direction, station: Stations) {
+        switch direction {
+        case .from:
+            directionFrom.station = station
+        case .to:
+            directionTo.station = station
+        }
+    }
+    
+    func changeDirection() {
+        swap(&directionFrom, &directionTo)
     }
     
     @MainActor
@@ -38,11 +70,5 @@ final class ScheduleViewModel: ObservableObject {
         } catch {
             print("Error fetching settlements: \(error)")
         }
-    }
-    
-    func getStations(for settlement: SettlementsFromStationsList) {
-        let allStations = settlement.stations ?? []
-        stations = allStations.filter { $0.station_type == "train_station" || $0.transport_type == "train" }
-        stations.sort {$0.title ?? "" < $1.title ?? "" }
     }
 }

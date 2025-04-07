@@ -11,6 +11,11 @@ struct StationSelectionView: View {
     @EnvironmentObject private var viewModel: ScheduleViewModel
     @EnvironmentObject var routerManager: NavigationRouter
     @State private var searchString: String = ""
+    private var direction: Direction
+    
+    init(direction: Direction) {
+        self.direction = direction
+    }
     
     var searchResults: [Stations] {
         viewModel.stations.filter {
@@ -31,6 +36,7 @@ struct StationSelectionView: View {
                             ForEach(searchResults, id: \.self) { station in
                                 ListRowView(text: station.title ?? "")
                                     .onTapGesture {
+                                        viewModel.setStation(for: direction, station: station)
                                         routerManager.reset()
                                     }
                             }
@@ -61,5 +67,5 @@ struct StationSelectionView: View {
 }
 
 #Preview {
-    StationSelectionView()
+    StationSelectionView(direction: .from)
 }

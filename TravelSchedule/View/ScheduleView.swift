@@ -20,13 +20,19 @@ struct ScheduleView: View {
                     Color.ypBlue
                     HStack(spacing: 16) {
                         VStack(alignment: .leading, spacing: 0) {
-                            ChoosingDirectionView(placeholder: "Откуда")
+                            ChoosingDirectionView(
+                                path: viewModel.directionFrom,
+                                placeholder: "Откуда"
+                            )
                                 .onTapGesture {
-                                    routerManager.push(to: .citySelection)
+                                    routerManager.push(to: .citySelection(direction: .from))
                                 }
-                            ChoosingDirectionView(placeholder: "Куда")
+                            ChoosingDirectionView(
+                                path: viewModel.directionTo,
+                                placeholder: "Куда"
+                            )
                                 .onTapGesture {
-                                    routerManager.push(to: .citySelection)
+                                    routerManager.push(to: .citySelection(direction: .to))
                                 }
                         }
                         .font(.system(size: 17, weight: .regular))
@@ -36,7 +42,7 @@ struct ScheduleView: View {
                         )
                         
                         Button {
-                            
+                            viewModel.changeDirection()
                         } label: {
                             Image("Change")
                                 .frame(width: 36, height: 36)
