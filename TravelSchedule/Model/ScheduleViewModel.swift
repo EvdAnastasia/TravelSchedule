@@ -10,9 +10,11 @@ import OpenAPIURLSession
 import OpenAPIRuntime
 
 typealias SettlementsFromStationsList = Components.Schemas.SettlementsFromStationsList
+typealias Stations = Components.Schemas.StationsFromStationsList
 
 final class ScheduleViewModel: ObservableObject {
     @Published var settlements: [SettlementsFromStationsList] = []
+    @Published var stations: [Stations] = []
     private let dataProvider = DataProvider()
     
     init() {
@@ -36,5 +38,11 @@ final class ScheduleViewModel: ObservableObject {
         } catch {
             print("Error fetching settlements: \(error)")
         }
+    }
+    
+    func getStations(for settlement: SettlementsFromStationsList) {
+        let allStations = settlement.stations ?? []
+        stations = allStations.filter { $0.station_type == "train_station" || $0.transport_type == "train" }
+        stations.sort {$0.title ?? "" < $1.title ?? "" }
     }
 }

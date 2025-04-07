@@ -1,19 +1,19 @@
 //
-//  CitySelectionView.swift
+//  StationSelectionView.swift
 //  TravelSchedule
 //
-//  Created by Anastasiia on 04.04.2025.
+//  Created by Anastasiia on 07.04.2025.
 //
 
 import SwiftUI
 
-struct CitySelectionView: View {
+struct StationSelectionView: View {
     @EnvironmentObject private var viewModel: ScheduleViewModel
     @EnvironmentObject var routerManager: NavigationRouter
     @State private var searchString: String = ""
     
-    var searchResults: [SettlementsFromStationsList] {
-        viewModel.settlements.filter {
+    var searchResults: [Stations] {
+        viewModel.stations.filter {
             searchString.isEmpty || ($0.title?.contains(searchString.capitalized) ?? false)
         }
     }
@@ -28,11 +28,10 @@ struct CitySelectionView: View {
                 if !searchResults.isEmpty {
                     ScrollView {
                         LazyVStack(alignment: .leading) {
-                            ForEach(searchResults, id: \.self) { settlement in
-                                ListRowView(text: settlement.title ?? "")
+                            ForEach(searchResults, id: \.self) { station in
+                                ListRowView(text: station.title ?? "")
                                     .onTapGesture {
-                                        viewModel.getStations(for: settlement)
-                                        routerManager.push(to: .stationSelection)
+                                        routerManager.reset()
                                     }
                             }
                         }
@@ -44,14 +43,14 @@ struct CitySelectionView: View {
                     .scrollIndicators(.hidden)
                 } else {
                     Spacer()
-                    NotFoundView(text: "Город не найден")
+                    NotFoundView(text: "Станция не найдена")
                         .onTapGesture {
                             hideKeyboard()
                         }
                 }
             }
         }
-        .navigationTitle("Выбор города")
+        .navigationTitle("Выбор станции")
         .navigationBarTitleDisplayMode(.inline)
         .foregroundStyle(.ypBlack)
     }
@@ -62,6 +61,5 @@ struct CitySelectionView: View {
 }
 
 #Preview {
-    CitySelectionView()
-        .environmentObject(ScheduleViewModel())
+    StationSelectionView()
 }

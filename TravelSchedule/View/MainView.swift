@@ -34,9 +34,9 @@ struct MainView: View {
                             .renderingMode(.template)
                     }
             }
-            .environmentObject(routerManager)
             .navigationDestination(for: Route.self) { $0 }
         }
+        .environmentObject(routerManager)
         .tint(.ypBlack)
         .preferredColorScheme(isDarkMode ? .dark : .light)
     }

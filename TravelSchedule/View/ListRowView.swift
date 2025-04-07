@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct ListRowView: View {
-    var settlement: String
+    var text: String
 
         var body: some View {
             ZStack {
                 Color.ypWhite.ignoresSafeArea()
                 HStack {
-                    Text(settlement)
+                    Text(text)
                         .font(.system(size: 17, weight: .regular))
                         .padding([.top, .bottom], 19)
                     Spacer()
@@ -27,5 +27,5 @@ struct ListRowView: View {
 }
 
 #Preview {
-    ListRowView(settlement: "Москва")
+    ListRowView(text: "Москва")
 }
