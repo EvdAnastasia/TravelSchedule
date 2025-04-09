@@ -24,16 +24,16 @@ struct ScheduleView: View {
                                 path: viewModel.directionFrom,
                                 placeholder: "Откуда"
                             )
-                                .onTapGesture {
-                                    routerManager.push(to: .citySelection(direction: .from))
-                                }
+                            .onTapGesture {
+                                routerManager.push(to: .citySelection(direction: .from))
+                            }
                             ChoosingDirectionView(
                                 path: viewModel.directionTo,
                                 placeholder: "Куда"
                             )
-                                .onTapGesture {
-                                    routerManager.push(to: .citySelection(direction: .to))
-                                }
+                            .onTapGesture {
+                                routerManager.push(to: .citySelection(direction: .to))
+                            }
                         }
                         .font(.system(size: 17, weight: .regular))
                         .background(
@@ -66,7 +66,7 @@ struct ScheduleView: View {
                         .foregroundStyle(.ypWhiteUniversal)
                         .cornerRadius(16)
                 }
-                .opacity(0)
+                .opacity(viewModel.isSearchButtonEnabled ? 1 : 0)
             }
         }
     }

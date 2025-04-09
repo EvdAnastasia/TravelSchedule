@@ -23,6 +23,10 @@ final class ScheduleViewModel: ObservableObject {
         Task { await getSettlements() }
     }
     
+    var isSearchButtonEnabled: Bool {
+        directionFrom.station != nil && directionTo.station != nil
+    }
+    
     func getStations(for settlement: SettlementsFromStationsList) {
         let allStations = settlement.stations ?? []
         stations = allStations.filter { $0.station_type == "train_station" || $0.transport_type == "train" }
