@@ -761,7 +761,7 @@ components:
           $ref: '#/components/schemas/Thread'
         departure_platform:
           type: string
-        departue:
+        departure:
           type: string
         stops:
           type: string
@@ -769,6 +769,10 @@ components:
           type: string
         to:
           $ref: '#/components/schemas/SegmentsFromTo'
+        transfers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transfers'
         has_transfers:
           type: boolean
         duration:
@@ -885,4 +889,17 @@ components:
         esr_code:
           type: string
         yandex_code:
+          type: string
+    Transfers:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        short_title:
+          type: string
+        popular_title:
+          type: string
+        code:
           type: string

@@ -9,6 +9,7 @@ import SwiftUI
 
 enum Route: Hashable {
     case userAgreement
+    case carriers
     case citySelection(direction: Direction)
     case stationSelection(direction: Direction)
 }
@@ -18,6 +19,9 @@ extension Route: View {
         switch self {
         case .userAgreement:
             UserAgreementView()
+                .toolbarRole(.editor)
+        case .carriers:
+            CarriersView()
                 .toolbarRole(.editor)
         case .citySelection(let direction):
             CitySelectionView(direction: direction)

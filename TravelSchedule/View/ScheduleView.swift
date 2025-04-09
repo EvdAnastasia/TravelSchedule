@@ -57,7 +57,10 @@ struct ScheduleView: View {
                 .frame(height: 128)
                 
                 Button {
-                    
+                    Task {
+                        await viewModel.search()
+                    }
+                    routerManager.push(to: .carriers)
                 } label: {
                     Text("Найти")
                         .frame(width: 150, height: 60)
