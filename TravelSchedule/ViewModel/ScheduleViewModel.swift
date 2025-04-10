@@ -20,6 +20,7 @@ final class ScheduleViewModel: ObservableObject {
     @Published var directionFrom = DirectionPath(settlement: nil, station: nil)
     @Published var directionTo = DirectionPath(settlement: nil, station: nil)
     @Published var hasTransfers: Bool = true
+    @Published var departureTimes: [DepartureTime] = []
     
     private var carriers: [Segments] = []
     private let dataProvider = DataProvider()
@@ -64,13 +65,54 @@ final class ScheduleViewModel: ObservableObject {
     
     func format(date: String, with format: String) -> String {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
         
         let outputFormatter = DateFormatter()
         outputFormatter.dateFormat = format
         outputFormatter.locale = Locale(identifier: "ru_RU")
         
         return outputFormatter.string(from: dateFormatter.date(from: date) ?? Date())
+    }
+    
+    func filter() {
+        var newFilteredCarriers = carriers
+        
+        if !departureTimes.isEmpty {
+            newFilteredCarriers = newFilteredCarriers.filter { segment in
+                guard let departure = segment.departure else { return false }
+                
+                let hour = convertToHours(departure: departure)
+                print(departure)
+                
+                switch hour {
+                case 6..<12: return departureTimes.contains(.morning)
+                case 12..<18: return departureTimes.contains(.afternoon)
+                case 18...23: return departureTimes.contains(.evening)
+                case 0..<6: return departureTimes.contains(.night)
+                default: return false
+                }
+            }
+        }
+        
+        if !hasTransfers {
+            newFilteredCarriers = newFilteredCarriers.filter {$0.has_transfers == false }
+        }
+        
+        filteredCarriers = newFilteredCarriers
+    }
+    
+    func select(departureTime: DepartureTime) {
+        if !departureTimes.contains(departureTime) {
+            departureTimes.append(departureTime)
+        } else {
+            departureTimes = departureTimes.filter { $0 != departureTime}
+        }
+        
+        print(departureTimes)
+    }
+    
+    func selectTransfer() {
+        hasTransfers.toggle()
     }
     
     @MainActor
@@ -88,7 +130,7 @@ final class ScheduleViewModel: ObservableObject {
                 toCode: toCode,
                 date: date,
                 transportType: "train",
-                hasTransfers: hasTransfers
+                hasTransfers: true
             )
             
             carriers = searchResult.segments ?? []
@@ -115,5 +157,13 @@ final class ScheduleViewModel: ObservableObject {
         } catch {
             print("Error fetching settlements: \(error)")
         }
+    }
+    
+    private func convertToHours(departure: String) -> Int {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+        
+        let hour = Calendar.current.component(.hour, from: dateFormatter.date(from: departure) ?? Date())
+        return hour
     }
 }

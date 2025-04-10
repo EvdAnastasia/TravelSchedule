@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct CarriersView: View {
+    @EnvironmentObject var routerManager: NavigationRouter
     @EnvironmentObject private var viewModel: ScheduleViewModel
     
     var body: some View {
@@ -47,15 +48,16 @@ struct CarriersView: View {
                             Spacer()
                             
                             Button {
+                                routerManager.push(to: .filters)
                             } label: {
-                                Label {
-                                    HStack {
-                                        Text("Уточнить время")
-                                            .font(.system(size: 17, weight: .bold))
-                                            .foregroundStyle(.ypWhiteUniversal)
-                                    }
-                                } icon: {}
-                                
+                                HStack {
+                                    Text("Уточнить время")
+                                        .font(.system(size: 17, weight: .bold))
+                                        .foregroundStyle(.ypWhiteUniversal)
+                                    Circle()
+                                        .frame(width: 8, height: 8)
+                                        .foregroundStyle(viewModel.departureTimes.isEmpty && viewModel.hasTransfers ? .ypBlue : .ypRed)
+                                }
                             }
                             .frame(idealWidth: 343, maxWidth: .infinity, maxHeight: 60)
                             .background(.ypBlue)
