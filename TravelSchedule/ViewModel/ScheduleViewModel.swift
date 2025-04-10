@@ -80,9 +80,7 @@ final class ScheduleViewModel: ObservableObject {
         if !departureTimes.isEmpty {
             newFilteredCarriers = newFilteredCarriers.filter { segment in
                 guard let departure = segment.departure else { return false }
-                
                 let hour = convertToHours(departure: departure)
-                print(departure)
                 
                 switch hour {
                 case 6..<12: return departureTimes.contains(.morning)
@@ -107,8 +105,6 @@ final class ScheduleViewModel: ObservableObject {
         } else {
             departureTimes = departureTimes.filter { $0 != departureTime}
         }
-        
-        print(departureTimes)
     }
     
     func selectTransfer() {
