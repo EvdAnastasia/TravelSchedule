@@ -52,9 +52,9 @@ struct CarriersView: View {
                         VStack {
                             Spacer()
                             
-                            Button {
+                            Button(action: {
                                 routerManager.push(to: .filters)
-                            } label: {
+                            }) {
                                 HStack {
                                     Text("Уточнить время")
                                         .font(.system(size: 17, weight: .bold))
@@ -63,8 +63,8 @@ struct CarriersView: View {
                                         .frame(width: 8, height: 8)
                                         .foregroundStyle(viewModel.departureTimes.isEmpty && viewModel.hasTransfers ? .ypBlue : .ypRed)
                                 }
+                                .frame(idealWidth: 343, maxWidth: .infinity, maxHeight: 60)
                             }
-                            .frame(idealWidth: 343, maxWidth: .infinity, maxHeight: 60)
                             .background(.ypBlue)
                             .clipShape(.rect(cornerRadius: 16))
                             .padding(.bottom, 8)

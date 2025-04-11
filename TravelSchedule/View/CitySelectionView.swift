@@ -58,6 +58,7 @@ struct CitySelectionView: View {
                             hideKeyboard()
                         }
                 }
+                Spacer()
             }
         }
         .navigationTitle("Выбор города")

@@ -45,20 +45,18 @@ struct FiltersView: View {
                 
                 Spacer()
                 
-                Button {
+                Button(action: {
                     viewModel.filter()
                     routerManager.navigateBack()
-                } label: {
+                }) {
                     Text("Применить")
                         .font(.system(size: 17, weight: .bold))
                         .foregroundStyle(.ypWhiteUniversal)
+                        .frame(idealWidth: 343, maxWidth: .infinity, maxHeight: 60)
                 }
-                .frame(idealWidth: 343, maxWidth: .infinity, maxHeight: 60)
                 .background(.ypBlue)
                 .clipShape(.rect(cornerRadius: 16))
                 .padding(.bottom, 24)
-                .toolbarRole(.editor)
-                .opacity(1)
             }
             .padding(16)
         }
