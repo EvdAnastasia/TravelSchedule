@@ -38,6 +38,8 @@ struct CarriersView: View {
                                     )
                                     .frame(height: 104)
                                     .onTapGesture {
+                                        viewModel.setCarrier(segment.thread?.carrier)
+                                        routerManager.push(to: .carrierInfo)
                                     }
                                 }
                             }

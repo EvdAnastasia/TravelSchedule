@@ -12,6 +12,7 @@ import OpenAPIRuntime
 typealias SettlementsFromStationsList = Components.Schemas.SettlementsFromStationsList
 typealias Stations = Components.Schemas.StationsFromStationsList
 typealias Segments = Components.Schemas.Segments
+typealias Carrier = Components.Schemas.Carrier
 
 final class ScheduleViewModel: ObservableObject {
     @Published var settlements: [SettlementsFromStationsList] = []
@@ -21,6 +22,7 @@ final class ScheduleViewModel: ObservableObject {
     @Published var directionTo = DirectionPath(settlement: nil, station: nil)
     @Published var hasTransfers: Bool = true
     @Published var departureTimes: [DepartureTime] = []
+    @Published var carrier: Carrier?
     
     private var carriers: [Segments] = []
     private let dataProvider = DataProvider()
@@ -57,6 +59,10 @@ final class ScheduleViewModel: ObservableObject {
         case .to:
             directionTo.station = station
         }
+    }
+    
+    func setCarrier(_ newCarrier: Carrier?) {
+        carrier = newCarrier
     }
     
     func changeDirection() {
