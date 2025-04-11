@@ -23,6 +23,7 @@ final class ScheduleViewModel: ObservableObject {
     @Published var hasTransfers: Bool = true
     @Published var departureTimes: [DepartureTime] = []
     @Published var carrier: Carrier?
+    @Published var isLoading: Bool = false
     
     private var carriers: [Segments] = []
     private let dataProvider = DataProvider()
@@ -119,6 +120,7 @@ final class ScheduleViewModel: ObservableObject {
     
     @MainActor
     func search() async {
+        isLoading = true
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let date = dateFormatter.string(from: Date())
@@ -140,10 +142,13 @@ final class ScheduleViewModel: ObservableObject {
         } catch {
             print(String(describing: error))
         }
+        
+        isLoading = false
     }
     
     @MainActor
     private func getSettlements() async {
+        isLoading = true
         do {
             let allStations = try await dataProvider.getStationsList()
             
@@ -159,6 +164,8 @@ final class ScheduleViewModel: ObservableObject {
         } catch {
             print("Error fetching settlements: \(error)")
         }
+        
+        isLoading = false
     }
     
     private func convertToHours(departure: String) -> Int {

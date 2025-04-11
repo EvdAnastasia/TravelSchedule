@@ -25,7 +25,10 @@ struct CarriersView: View {
                 }
                 .font(.system(size: 24, weight: .bold))
                 
-                if !viewModel.filteredCarriers.isEmpty {
+                if viewModel.isLoading {
+                    Spacer()
+                    ProgressView()
+                } else if !viewModel.filteredCarriers.isEmpty {
                     ZStack(alignment: .bottom) {
                         ScrollView {
                             LazyVStack(spacing: 8) {

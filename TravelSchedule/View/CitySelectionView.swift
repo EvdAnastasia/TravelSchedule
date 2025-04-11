@@ -30,7 +30,10 @@ struct CitySelectionView: View {
             VStack {
                 SearchBar(searchText: $searchString)
                 
-                if !searchResults.isEmpty {
+                if viewModel.isLoading {
+                    Spacer()
+                    ProgressView()
+                } else if !searchResults.isEmpty {
                     ScrollView {
                         LazyVStack(alignment: .leading) {
                             ForEach(searchResults, id: \.self) { settlement in
