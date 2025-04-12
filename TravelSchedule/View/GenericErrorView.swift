@@ -11,7 +11,7 @@ struct GenericErrorView: View {
     let imageName: String
     let text: String
     
-    init(error: ErrorType) {
+    init(type error: ErrorType) {
         switch error {
         case .internetConnectionError:
             self.imageName = "InternetError"
@@ -37,5 +37,5 @@ struct GenericErrorView: View {
 }
 
 #Preview {
-    GenericErrorView(error: .serverError)
+    GenericErrorView(type: .serverError)
 }

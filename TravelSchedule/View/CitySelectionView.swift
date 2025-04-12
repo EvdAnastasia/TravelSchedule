@@ -28,35 +28,39 @@ struct CitySelectionView: View {
             Color.ypWhite.ignoresSafeArea()
             
             VStack {
-                SearchBar(searchText: $searchString)
-                
-                if viewModel.isLoading {
-                    Spacer()
-                    ProgressView()
-                } else if !searchResults.isEmpty {
-                    ScrollView {
-                        LazyVStack(alignment: .leading) {
-                            ForEach(searchResults, id: \.self) { settlement in
-                                ListRowView(text: settlement.title ?? "")
-                                    .onTapGesture {
-                                        viewModel.setSettlement(for: direction, settlement: settlement)
-                                        viewModel.getStations(for: settlement)
-                                        routerManager.push(to: .stationSelection(direction: direction))
-                                    }
-                            }
-                        }
-                        .padding(.horizontal, 16)
-                    }
-                    .onTapGesture {
-                        hideKeyboard()
-                    }
-                    .scrollIndicators(.hidden)
+                if let error = viewModel.isError {
+                    GenericErrorView(type: error)
                 } else {
-                    Spacer()
-                    NotFoundView(text: "Город не найден")
+                    SearchBar(searchText: $searchString)
+                    
+                    if viewModel.isLoading {
+                        Spacer()
+                        ProgressView()
+                    } else if !searchResults.isEmpty {
+                        ScrollView {
+                            LazyVStack(alignment: .leading) {
+                                ForEach(searchResults, id: \.self) { settlement in
+                                    ListRowView(text: settlement.title ?? "")
+                                        .onTapGesture {
+                                            viewModel.setSettlement(for: direction, settlement: settlement)
+                                            viewModel.getStations(for: settlement)
+                                            routerManager.push(to: .stationSelection(direction: direction))
+                                        }
+                                }
+                            }
+                            .padding(.horizontal, 16)
+                        }
                         .onTapGesture {
                             hideKeyboard()
                         }
+                        .scrollIndicators(.hidden)
+                    } else {
+                        Spacer()
+                        NotFoundView(text: "Город не найден")
+                            .onTapGesture {
+                                hideKeyboard()
+                            }
+                    }
                 }
                 Spacer()
             }

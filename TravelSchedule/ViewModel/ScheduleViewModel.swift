@@ -24,6 +24,7 @@ final class ScheduleViewModel: ObservableObject {
     @Published var departureTimes: [DepartureTime] = []
     @Published var carrier: Carrier?
     @Published var isLoading: Bool = false
+    @Published var isError: ErrorType? = nil
     
     private var carriers: [Segments] = []
     private let dataProvider = DataProvider()
@@ -121,6 +122,8 @@ final class ScheduleViewModel: ObservableObject {
     @MainActor
     func search() async {
         isLoading = true
+        isError = nil
+        
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let date = dateFormatter.string(from: Date())
@@ -139,8 +142,12 @@ final class ScheduleViewModel: ObservableObject {
             
             carriers = searchResult.segments ?? []
             filteredCarriers = carriers
+        } catch ErrorType.internetConnectionError {
+            isError = .internetConnectionError
+        } catch ErrorType.serverError {
+            isError = .serverError
         } catch {
-            print(String(describing: error))
+            print("Searching error: \(error)")
         }
         
         isLoading = false
@@ -149,6 +156,8 @@ final class ScheduleViewModel: ObservableObject {
     @MainActor
     private func getSettlements() async {
         isLoading = true
+        isError = nil
+        
         do {
             let allStations = try await dataProvider.getStationsList()
             
@@ -160,7 +169,10 @@ final class ScheduleViewModel: ObservableObject {
                     return MockData.settlements.contains(title) && !title.isEmpty
                 }
                 .sorted { $0.title ?? "" < $1.title ?? "" } ?? []
-            
+        } catch ErrorType.internetConnectionError {
+            isError = .internetConnectionError
+        } catch ErrorType.serverError {
+            isError = .serverError
         } catch {
             print("Error fetching settlements: \(error)")
         }
