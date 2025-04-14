@@ -15,6 +15,9 @@ typealias Segments = Components.Schemas.Segments
 typealias Carrier = Components.Schemas.Carrier
 
 final class ScheduleViewModel: ObservableObject {
+    
+    // MARK: - UI Binding
+    
     @Published var settlements: [SettlementsFromStationsList] = []
     @Published var stations: [Stations] = []
     @Published var filteredCarriers: [Segments] = []
@@ -23,8 +26,7 @@ final class ScheduleViewModel: ObservableObject {
     @Published var hasTransfers: Bool = true
     @Published var departureTimes: [DepartureTime] = []
     @Published var carrier: Carrier?
-    @Published var isLoading: Bool = false
-    @Published var isError: ErrorType? = nil
+    @Published var state: AppState = .loading
     
     private var carriers: [Segments] = []
     private let dataProvider = DataProvider()
@@ -37,11 +39,40 @@ final class ScheduleViewModel: ObservableObject {
         directionFrom.station != nil && directionTo.station != nil
     }
     
+    // MARK: - Request data
+    
+    @MainActor
+    private func getSettlements() async {
+        state = .loading
+        
+        do {
+            let allStations = try await dataProvider.getStationsList()
+            
+            settlements = allStations.countries?
+                .flatMap { $0.regions ?? [] }
+                .flatMap { $0.settlements ?? [] }
+                .filter {
+                    guard let title = $0.title else { return false }
+                    return MockData.settlements.contains(title) && !title.isEmpty
+                }
+                .sorted { $0.title ?? "" < $1.title ?? "" } ?? []
+            state = .success
+        } catch ErrorType.internetConnectionError {
+            state = .error(.internetConnectionError)
+        } catch ErrorType.serverError {
+            state = .error(.serverError)
+        } catch {
+            print("Error fetching settlements: \(error)")
+        }
+    }
+    
     func getStations(for settlement: SettlementsFromStationsList) {
         let allStations = settlement.stations ?? []
         stations = allStations.filter { $0.station_type == "train_station" || $0.transport_type == "train" }
         stations.sort {$0.title ?? "" < $1.title ?? "" }
     }
+    
+    // MARK: - Direction Handling
     
     func setSettlement(for direction: Direction, settlement: SettlementsFromStationsList) {
         switch direction {
@@ -71,16 +102,7 @@ final class ScheduleViewModel: ObservableObject {
         swap(&directionFrom, &directionTo)
     }
     
-    func format(date: String, with format: String) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
-        
-        let outputFormatter = DateFormatter()
-        outputFormatter.dateFormat = format
-        outputFormatter.locale = Locale(identifier: "ru_RU")
-        
-        return outputFormatter.string(from: dateFormatter.date(from: date) ?? Date())
-    }
+    // MARK: - Data Filtering
     
     func filter() {
         var newFilteredCarriers = carriers
@@ -119,10 +141,11 @@ final class ScheduleViewModel: ObservableObject {
         hasTransfers.toggle()
     }
     
+    // MARK: - Search
+    
     @MainActor
     func search() async {
-        isLoading = true
-        isError = nil
+        state = .loading
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -142,49 +165,31 @@ final class ScheduleViewModel: ObservableObject {
             
             carriers = searchResult.segments ?? []
             filteredCarriers = carriers
+            state = .success
         } catch ErrorType.internetConnectionError {
-            isError = .internetConnectionError
+            state = .error(.internetConnectionError)
         } catch ErrorType.serverError {
-            isError = .serverError
+            state = .error(.serverError)
         } catch {
             print("Searching error: \(error)")
         }
-        
-        isLoading = false
     }
     
-    @MainActor
-    private func getSettlements() async {
-        isLoading = true
-        isError = nil
+    // MARK: - Data Converting
+    
+    func format(date: String, with format: String) -> String {
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = format
+        outputFormatter.locale = Locale(identifier: "ru_RU")
         
-        do {
-            let allStations = try await dataProvider.getStationsList()
-            
-            settlements = allStations.countries?
-                .flatMap { $0.regions ?? [] }
-                .flatMap { $0.settlements ?? [] }
-                .filter {
-                    guard let title = $0.title else { return false }
-                    return MockData.settlements.contains(title) && !title.isEmpty
-                }
-                .sorted { $0.title ?? "" < $1.title ?? "" } ?? []
-        } catch ErrorType.internetConnectionError {
-            isError = .internetConnectionError
-        } catch ErrorType.serverError {
-            isError = .serverError
-        } catch {
-            print("Error fetching settlements: \(error)")
-        }
-        
-        isLoading = false
+        return outputFormatter.string(from: CustomDateFormatter.dateParser.date(from: date) ?? Date())
     }
     
     private func convertToHours(departure: String) -> Int {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
         
-        let hour = Calendar.current.component(.hour, from: dateFormatter.date(from: departure) ?? Date())
+        let hour = Calendar.current.component(.hour, from: CustomDateFormatter.dateParser.date(from: departure) ?? Date())
         return hour
     }
 }

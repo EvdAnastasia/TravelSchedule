@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+private enum RadioSelectConstants {
+    static let selectedImageName = "largecircle.fill.circle"
+    static let unselectedImageName = "circle"
+}
+
 struct RadioSelect: View {
     let title: String
     let selected: Bool
@@ -18,7 +23,7 @@ struct RadioSelect: View {
             HStack {
                 Text(title)
                 Spacer()
-                Image(systemName: selected ? "largecircle.fill.circle" : "circle")
+                Image(systemName: selected ? RadioSelectConstants.selectedImageName : RadioSelectConstants.unselectedImageName)
             }
             .foregroundStyle(.ypBlack)
         }
@@ -27,5 +32,9 @@ struct RadioSelect: View {
 }
 
 #Preview {
-    RadioSelect(title: "", selected: false)
+    VStack {
+        RadioSelect(title: "title", selected: false)
+        RadioSelect(title: "title", selected: true)
+    }
+    .padding()
 }

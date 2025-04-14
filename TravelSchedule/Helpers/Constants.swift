@@ -8,6 +8,5 @@
 import Foundation
 
 enum Constants {
-    static let userAgreementView = "UserAgreementView"
     static let isDarkMode = "isDarkMode"
 }

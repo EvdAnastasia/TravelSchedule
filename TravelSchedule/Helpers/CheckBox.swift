@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+private enum CheckBoxConstants {
+    static let selectedImageName = "checkmark.square.fill"
+    static let unselectedImageName = "square"
+}
+
 struct CheckBox: View {
     let title: String
     let selected: Bool
@@ -18,7 +23,7 @@ struct CheckBox: View {
             HStack {
                 Text(title)
                 Spacer()
-                Image(systemName: selected ? "checkmark.square.fill" : "square")
+                Image(systemName: selected ? CheckBoxConstants.selectedImageName : CheckBoxConstants.unselectedImageName)
                     .frame(width: 20, height: 20)
             }
             .foregroundStyle(.ypBlack)
@@ -28,5 +33,9 @@ struct CheckBox: View {
 }
 
 #Preview {
-    CheckBox(title: "", selected: false)
+    VStack {
+        CheckBox(title: "title", selected: false)
+        CheckBox(title: "title", selected: true)
+    }
+    .padding()
 }

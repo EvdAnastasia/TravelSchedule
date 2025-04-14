@@ -11,34 +11,46 @@ struct MainView: View {
     @StateObject private var routerManager = NavigationRouter()
     @AppStorage(Constants.isDarkMode) private var isDarkMode = false
     
+    // MARK: - Init
+    
     init() {
-        let appearance = UITabBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .ypWhite
-        appearance.shadowColor = .ypDivider
-        UITabBar.appearance().scrollEdgeAppearance = appearance
+        configureTabBarAppearance()
     }
+    
+    // MARK: - Body
     
     var body: some View {
         NavigationStack(path: $routerManager.routes) {
-            TabView {
-                ScheduleView()
-                    .tabItem {
-                        Image("Schedule")
-                            .renderingMode(.template)
-                    }
-                
-                SettingsView()
-                    .tabItem {
-                        Image("Settings")
-                            .renderingMode(.template)
-                    }
-            }
+            tabBar
             .navigationDestination(for: Route.self) { $0 }
         }
         .environmentObject(routerManager)
         .tint(.ypBlack)
         .preferredColorScheme(isDarkMode ? .dark : .light)
+    }
+    
+    // MARK: - Content
+    
+    private var tabBar: some View {
+        TabView {
+            ScheduleView()
+                .tabItem {
+                    Image("Schedule").renderingMode(.template)
+                }
+            
+            SettingsView()
+                .tabItem {
+                    Image("Settings").renderingMode(.template)
+                }
+        }
+    }
+    
+    private func configureTabBarAppearance() {
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .ypWhite
+        appearance.shadowColor = .ypDivider
+        UITabBar.appearance().scrollEdgeAppearance = appearance
     }
 }
 

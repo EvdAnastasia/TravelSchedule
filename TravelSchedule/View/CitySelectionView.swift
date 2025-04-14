@@ -23,51 +23,58 @@ struct CitySelectionView: View {
         }
     }
     
+    // MARK: - Body
+    
     var body: some View {
         ZStack {
             Color.ypWhite.ignoresSafeArea()
             
-            VStack {
-                if let error = viewModel.isError {
-                    GenericErrorView(type: error)
-                } else {
-                    SearchBar(searchText: $searchString)
-                    
-                    if viewModel.isLoading {
-                        Spacer()
-                        ProgressView()
-                    } else if !searchResults.isEmpty {
-                        ScrollView {
-                            LazyVStack(alignment: .leading) {
-                                ForEach(searchResults, id: \.self) { settlement in
-                                    ListRowView(text: settlement.title ?? "")
-                                        .onTapGesture {
-                                            viewModel.setSettlement(for: direction, settlement: settlement)
-                                            viewModel.getStations(for: settlement)
-                                            routerManager.push(to: .stationSelection(direction: direction))
-                                        }
-                                }
-                            }
-                            .padding(.horizontal, 16)
-                        }
-                        .onTapGesture {
-                            hideKeyboard()
-                        }
-                        .scrollIndicators(.hidden)
-                    } else {
-                        Spacer()
-                        NotFoundView(text: "Город не найден")
-                            .onTapGesture {
-                                hideKeyboard()
-                            }
-                    }
-                }
-                Spacer()
+            switch viewModel.state {
+            case .loading:
+                ProgressView()
+            case .success:
+                content
+            case .error(let error):
+                GenericErrorView(type: error)
             }
         }
         .navigationTitle("Выбор города")
         .navigationBarTitleDisplayMode(.inline)
         .foregroundStyle(.ypBlack)
+    }
+    
+    // MARK: - Content
+    
+    private var content: some View {
+        VStack {
+            SearchBar(searchText: $searchString)
+            if !searchResults.isEmpty {
+                ScrollView {
+                    LazyVStack(alignment: .leading) {
+                        ForEach(searchResults, id: \.self) { settlement in
+                            ListRowView(text: settlement.title ?? "")
+                                .onTapGesture {
+                                    viewModel.setSettlement(for: direction, settlement: settlement)
+                                    viewModel.getStations(for: settlement)
+                                    routerManager.push(to: .stationSelection(direction: direction))
+                                }
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                }
+                .onTapGesture {
+                    hideKeyboard()
+                }
+                .scrollIndicators(.hidden)
+            } else {
+                Spacer()
+                NotFoundView(text: "Город не найден")
+                    .onTapGesture {
+                        hideKeyboard()
+                    }
+            }
+            
+        }
     }
     
     private func hideKeyboard() {

@@ -8,36 +8,55 @@
 import SwiftUI
 
 struct ChoosingDirectionView: View {
-    let text: String
+    let path: DirectionPath
     let placeholder: String
     
-    init(path: DirectionPath, placeholder: String) {
-        self.text = (path.settlement?.title.flatMap { settlementTitle in
-            path.station?.title.map { stationTitle in
-                "\(settlementTitle) (\(stationTitle))"
-            }
-        }) ?? placeholder
-        
-        self.placeholder = placeholder
+    private var displayText: String {
+        if let settlement = path.settlement?.title,
+           let station = path.station?.title {
+            return "\(settlement) (\(station))"
+        } else {
+            return placeholder
+        }
     }
     
     var body: some View {
         ZStack(alignment: .leading) {
             Color.ypWhiteUniversal.ignoresSafeArea()
             
-            Text(text)
+            Text(displayText)
                 .padding(.leading, 13)
                 .padding(.trailing, 16)
                 .lineLimit(1)
-                .foregroundStyle(text != placeholder ? .ypBlackUniversal : .ypGray)
+                .foregroundStyle(displayText == placeholder ? .ypGray : .ypBlackUniversal)
         }
         .cornerRadius(20)
     }
 }
 
 #Preview {
-    ChoosingDirectionView(
-        path: DirectionPath(settlement: nil, station: nil),
-        placeholder: "Откуда"
-    )
+    VStack(spacing: 12) {
+        ChoosingDirectionView(
+            path: DirectionPath(settlement: nil, station: nil),
+            placeholder: "Откуда"
+        )
+        
+        ChoosingDirectionView(
+            path: DirectionPath(
+                settlement: SettlementsFromStationsList(title: "Москва"),
+                station: Stations(codes: .init(yandex_code: "s9602490"), title: "Киевская")
+            ),
+            placeholder: "Откуда"
+        )
+        
+        ChoosingDirectionView(
+            path: DirectionPath(
+                settlement: SettlementsFromStationsList(title: "Санкт-Петербург"),
+                station: nil
+            ),
+            placeholder: "Куда"
+        )
+    }
+    .padding()
+    .background(Color.gray.opacity(0.05))
 }
