@@ -12,5 +12,5 @@ struct Story: Identifiable {
     let imageName: String
     let title: String
     let description: String
-    let isViewed: Bool
+    var isViewed: Bool
 }

@@ -23,6 +23,7 @@ struct ScheduleView: View {
                         ForEach(storiesViewModel.stories) { story in
                             StoryPreview(story: story)
                                 .onTapGesture {
+                                    storiesViewModel.showStory(at: story.id)
                                     isShowingStories = true
                                 }
                         }

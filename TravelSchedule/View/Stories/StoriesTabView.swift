@@ -15,7 +15,6 @@ struct StoriesTabView: View {
         TabView(selection: $currentStoryIndex) {
             ForEach(stories.indices, id: \.self) { index in
                 StoryView(story: stories[index])
-                    .tag(index)
                     .onTapGesture {
                         didTapStory()
                     }

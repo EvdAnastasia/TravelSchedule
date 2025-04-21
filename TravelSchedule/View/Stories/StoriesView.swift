@@ -23,6 +23,7 @@ struct StoriesView: View {
                 currentStoryIndex: $storiesViewModel.currentStoryIndex
             )
             .onChange(of: storiesViewModel.currentStoryIndex) { newValue in
+                storiesViewModel.setStoryAsViewed(to: newValue)
                 storiesViewModel.didChangeCurrentIndex(to: newValue)
             }
             
@@ -42,10 +43,14 @@ struct StoriesView: View {
             .padding(.trailing, 12)
             .padding(.top, 57)
         }
+        .onAppear {
+            storiesViewModel.setStoryAsViewed(to: storiesViewModel.currentStoryIndex)
+        }
     }
     
     private func closeStories() {
         dismiss()
+        storiesViewModel.orderStories()
     }
 }
 
