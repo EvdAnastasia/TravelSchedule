@@ -1,5 +1,5 @@
 //
-//  MockData.swift
+//  SettlementsMock.swift
 //  TravelSchedule
 //
 //  Created by Anastasiia on 05.04.2025.
@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct MockData {
-    static let settlements: [String] = [
+struct SettlementsMock {
+    static let data: [String] = [
         "Москва",
         "Санкт-Петербург",
         "Сочи",

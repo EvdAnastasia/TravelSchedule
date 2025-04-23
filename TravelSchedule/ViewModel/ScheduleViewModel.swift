@@ -53,7 +53,7 @@ final class ScheduleViewModel: ObservableObject {
                 .flatMap { $0.settlements ?? [] }
                 .filter {
                     guard let title = $0.title else { return false }
-                    return MockData.settlements.contains(title) && !title.isEmpty
+                    return SettlementsMock.data.contains(title) && !title.isEmpty
                 }
                 .sorted { $0.title ?? "" < $1.title ?? "" } ?? []
             state = .success

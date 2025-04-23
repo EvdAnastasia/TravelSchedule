@@ -10,12 +10,27 @@ import SwiftUI
 struct ScheduleView: View {
     @EnvironmentObject var routerManager: NavigationRouter
     @EnvironmentObject private var viewModel: ScheduleViewModel
+    @StateObject private var storiesViewModel = StoriesViewModel()
     
     var body: some View {
         ZStack {
             Color.ypWhite.ignoresSafeArea()
             
             VStack(spacing: 16) {
+                ScrollView(.horizontal) {
+                    LazyHStack(spacing: 12) {
+                        ForEach(storiesViewModel.stories) { story in
+                            StoryPreview(story: story)
+                                .onTapGesture {
+                                    storiesViewModel.select(story: story)
+                                }
+                        }
+                    }
+                }
+                .padding(.leading, 16)
+                .scrollIndicators(.hidden)
+                .frame(height: 188)
+                
                 ZStack {
                     Color.ypBlue
                     HStack(spacing: 16) {
@@ -70,11 +85,18 @@ struct ScheduleView: View {
                         .cornerRadius(16)
                 }
                 .opacity(viewModel.isSearchButtonEnabled ? 1 : 0)
+                
+                Spacer()
             }
+        }
+        .fullScreenCover(isPresented: $storiesViewModel.isShowingStories) {
+            StoriesView(model: storiesViewModel)
         }
     }
 }
 
 #Preview {
     ScheduleView()
+        .environmentObject(ScheduleViewModel())
+        .environmentObject(StoriesViewModel())
 }
