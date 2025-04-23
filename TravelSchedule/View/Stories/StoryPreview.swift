@@ -33,5 +33,5 @@ struct StoryPreview: View {
 }
 
 #Preview {
-    StoryPreview(story: MockStories.data[0])
+    StoryPreview(story: StoriesMock.data[0])
 }

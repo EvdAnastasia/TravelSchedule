@@ -11,7 +11,6 @@ struct ScheduleView: View {
     @EnvironmentObject var routerManager: NavigationRouter
     @EnvironmentObject private var viewModel: ScheduleViewModel
     @StateObject private var storiesViewModel = StoriesViewModel()
-    @State private var isShowingStories: Bool = false
     
     var body: some View {
         ZStack {
@@ -23,8 +22,7 @@ struct ScheduleView: View {
                         ForEach(storiesViewModel.stories) { story in
                             StoryPreview(story: story)
                                 .onTapGesture {
-                                    storiesViewModel.showStory(at: story.id)
-                                    isShowingStories = true
+                                    storiesViewModel.select(story: story)
                                 }
                         }
                     }
@@ -91,7 +89,7 @@ struct ScheduleView: View {
                 Spacer()
             }
         }
-        .fullScreenCover(isPresented: $isShowingStories) {
+        .fullScreenCover(isPresented: $storiesViewModel.isShowingStories) {
             StoriesView(model: storiesViewModel)
         }
     }

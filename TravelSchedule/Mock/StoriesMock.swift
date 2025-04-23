@@ -1,5 +1,5 @@
 //
-//  MockStories.swift
+//  StoriesMock.swift
 //  TravelSchedule
 //
 //  Created by Anastasiia on 19.04.2025.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MockStories {
+struct StoriesMock {
     
     static let data: [Story] = {
         var stories: [Story] = []

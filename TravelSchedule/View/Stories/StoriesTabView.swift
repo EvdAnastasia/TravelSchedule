@@ -24,11 +24,11 @@ struct StoriesTabView: View {
         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
     }
     
-    func didTapStory() {
+    private func didTapStory() {
         currentStoryIndex = min(currentStoryIndex + 1, stories.count - 1)
     }
 }
 
 #Preview {
-    StoriesTabView(stories: MockStories.data, currentStoryIndex: Binding.constant(0))
+    StoriesTabView(stories: StoriesMock.data, currentStoryIndex: Binding.constant(0))
 }

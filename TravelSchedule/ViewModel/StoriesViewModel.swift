@@ -8,16 +8,22 @@
 import SwiftUI
 
 final class StoriesViewModel: ObservableObject {
-    @Published var stories = MockStories.data
+    @Published var stories = StoriesMock.data
     @Published var currentStoryIndex: Int = 0
     @Published var currentProgress: CGFloat = 0
+    @Published var isShowingStories: Bool = false
     @Published var timerConfiguration: TimerConfiguration
     
     init() {
-        timerConfiguration = TimerConfiguration(storiesCount: MockStories.data.count)
+        timerConfiguration = TimerConfiguration(storiesCount: StoriesMock.data.count)
     }
     
-    func showStory(at id: UUID) {
+    func select(story: Story) {
+        showStory(at: story.id)
+        isShowingStories = true
+    }
+    
+    private func showStory(at id: UUID) {
         if let firstStory = stories.first(where: { $0.id == id }) {
             var finalStories: [Story] = [firstStory]
             let remainingStories = stories.filter{ $0.id != id }.sorted { (story1: Story, story2: Story) in
