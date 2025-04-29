@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MainView: View {
     @StateObject private var routerManager = NavigationRouter()
+    @EnvironmentObject private var viewModel: ScheduleViewModel
     @AppStorage(Constants.isDarkMode) private var isDarkMode = false
     
     // MARK: - Init
@@ -27,6 +28,9 @@ struct MainView: View {
         .environmentObject(routerManager)
         .tint(.ypBlack)
         .preferredColorScheme(isDarkMode ? .dark : .light)
+        .task {
+            await viewModel.getSettlements()
+        }
     }
     
     // MARK: - Content

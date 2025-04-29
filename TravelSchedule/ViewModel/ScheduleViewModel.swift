@@ -14,6 +14,7 @@ typealias Stations = Components.Schemas.StationsFromStationsList
 typealias Segments = Components.Schemas.Segments
 typealias Carrier = Components.Schemas.Carrier
 
+@MainActor
 final class ScheduleViewModel: ObservableObject {
     
     // MARK: - UI Binding
@@ -31,18 +32,13 @@ final class ScheduleViewModel: ObservableObject {
     private var carriers: [Segments] = []
     private let dataProvider = DataProvider()
     
-    init() {
-        Task { await getSettlements() }
-    }
-    
     var isSearchButtonEnabled: Bool {
         directionFrom.station != nil && directionTo.station != nil
     }
     
     // MARK: - Request data
     
-    @MainActor
-    private func getSettlements() async {
+    func getSettlements() async {
         state = .loading
         
         do {

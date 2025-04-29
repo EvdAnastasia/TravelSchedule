@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 final class NavigationRouter: ObservableObject {
     @Published var routes = [Route]()
     

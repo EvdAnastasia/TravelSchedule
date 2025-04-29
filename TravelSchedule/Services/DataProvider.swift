@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class DataProvider {
+actor DataProvider: Sendable {
     
     func getStationsList() async throws -> StationsList {
         let client = СlientCreator.create()

@@ -10,7 +10,7 @@ import OpenAPIURLSession
 
 typealias SearchResult = Components.Schemas.SearchResult
 
-protocol SearchServiceProtocol {
+protocol SearchServiceProtocol: Sendable {
     func getSearchResult(
         from: String,
         to: String,
@@ -20,7 +20,7 @@ protocol SearchServiceProtocol {
     ) async throws -> SearchResult
 }
 
-final class SearchService: SearchServiceProtocol {
+actor SearchService: SearchServiceProtocol {
     private let client: Client
     private let apikey: String
     
