@@ -113,4 +113,5 @@ struct CarrierCardView: View {
     CarriersView()
         .environmentObject(NavigationRouter())
         .environmentObject(ScheduleViewModel.mock)
+        .environmentObject(CarriersViewModel.mock)
 }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @EnvironmentObject var routerManager: NavigationRouter
+    @EnvironmentObject private var routerManager: NavigationRouter
     @AppStorage(Constants.isDarkMode) private var isDarkMode = false
     
     var body: some View {

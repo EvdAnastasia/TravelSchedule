@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct StationSelectionView: View {
-    @EnvironmentObject private var viewModel: ScheduleViewModel
-    @EnvironmentObject var routerManager: NavigationRouter
+    @EnvironmentObject private var scheduleViewModel: ScheduleViewModel
+    @EnvironmentObject private var routerManager: NavigationRouter
     @State private var searchString: String = ""
     private var direction: Direction
     
@@ -18,7 +18,7 @@ struct StationSelectionView: View {
     }
     
     var searchResults: [Stations] {
-        viewModel.stations.filter {
+        scheduleViewModel.stations.filter {
             searchString.isEmpty || ($0.title?.contains(searchString.capitalized) ?? false)
         }
     }
@@ -36,7 +36,7 @@ struct StationSelectionView: View {
                             ForEach(searchResults, id: \.self) { station in
                                 ListRowView(text: station.title ?? "")
                                     .onTapGesture {
-                                        viewModel.setStation(for: direction, station: station)
+                                        scheduleViewModel.setStation(for: direction, station: station)
                                         routerManager.reset()
                                     }
                             }

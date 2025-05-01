@@ -8,14 +8,15 @@
 import SwiftUI
 
 struct CarrierInfoView: View {
-    @EnvironmentObject private var viewModel: ScheduleViewModel
+    @EnvironmentObject private var scheduleViewModel: ScheduleViewModel
+    @EnvironmentObject private var carriersViewModel: CarriersViewModel
     
     var body: some View {
         ZStack {
             Color.ypWhite.ignoresSafeArea()
             
             VStack(alignment: .leading, spacing: 16) {
-                AsyncImage(url: URL(string: viewModel.carrier?.logo ?? "")) { loading in
+                AsyncImage(url: URL(string: carriersViewModel.carrier?.logo ?? "")) { loading in
                     switch loading {
                     case .success(let image):
                         image
@@ -32,12 +33,12 @@ struct CarrierInfoView: View {
                 .clipShape(.rect(cornerRadius: 24))
                 
                 VStack(alignment: .leading, spacing: 16) {
-                    Text(viewModel.carrier?.title ?? "Нет информации")
+                    Text(carriersViewModel.carrier?.title ?? "Нет информации")
                         .font(.system(size: 24, weight: .bold))
                     VStack(alignment: .leading, spacing: 0) {
                         Text("E-mail")
                             .font(.system(size: 17, weight: .regular))
-                        Text(viewModel.carrier?.email ?? "Нет информации")
+                        Text(carriersViewModel.carrier?.email ?? "Нет информации")
                             .font(.system(size: 12, weight: .regular))
                             .foregroundStyle(.ypBlue)
                     }
@@ -45,7 +46,7 @@ struct CarrierInfoView: View {
                     VStack(alignment: .leading, spacing: 0) {
                         Text("Телефон")
                             .font(.system(size: 17, weight: .regular))
-                        Text(viewModel.carrier?.phone ?? "Нет информации")
+                        Text(carriersViewModel.carrier?.phone ?? "Нет информации")
                             .font(.system(size: 12, weight: .regular))
                             .foregroundStyle(.ypBlue)
                     }
