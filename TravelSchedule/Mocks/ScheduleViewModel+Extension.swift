@@ -1,5 +1,5 @@
 //
-//  Extension+ScheduleViewModel.swift
+//  ScheduleViewModel+Extension.swift
 //  TravelSchedule
 //
 //  Created by Anastasiia on 14.04.2025.

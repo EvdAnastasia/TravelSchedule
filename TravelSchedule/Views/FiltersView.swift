@@ -9,7 +9,6 @@ import SwiftUI
 
 struct FiltersView: View {
     @EnvironmentObject private var routerManager: NavigationRouter
-    @EnvironmentObject private var scheduleViewModel: ScheduleViewModel
     @EnvironmentObject private var carriersViewModel: CarriersViewModel
     @EnvironmentObject private var filtersViewModel: FiltersViewModel
     
@@ -40,7 +39,7 @@ struct FiltersView: View {
                                     !filtersViewModel.hasTransfers && hasTransfer == .no
                         )
                             .onTapGesture {
-                                filtersViewModel.selectTransfer()
+                                filtersViewModel.toggleTransfers()
                             }
                     }
                 }

@@ -1,5 +1,5 @@
 //
-//  Extension+CarriersViewModel.swift
+//  CarriersViewModel+Extension.swift
 //  TravelSchedule
 //
 //  Created by Anastasiia on 01.05.2025.
@@ -9,9 +9,16 @@ import Foundation
 
 extension CarriersViewModel {
     static var mock: CarriersViewModel {
-        let viewModel = CarriersViewModel()
         let carrier = Carrier(title: "РЖД", logo: nil)
+        let segment = makeSegment(with: carrier)
         
+        let viewModel = CarriersViewModel()
+        viewModel.filteredCarriers = [segment]
+        viewModel.carrier = carrier
+        return viewModel
+    }
+    
+    private static func makeSegment(with carrier: Carrier) -> Segments {
         var segment = Segments()
         segment.thread = .init(carrier: carrier)
         segment.start_date = "2025-04-15T00:00:00+0300"
@@ -20,10 +27,6 @@ extension CarriersViewModel {
         segment.duration = 18000
         segment.has_transfers = true
         segment.transfers = [.init(title: "Воронеж")]
-        
-        viewModel.filteredCarriers = [segment]
-        viewModel.carrier = carrier
-        
-        return viewModel
+        return segment
     }
 }

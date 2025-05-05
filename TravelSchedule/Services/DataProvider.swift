@@ -10,7 +10,7 @@ import Foundation
 actor DataProvider: Sendable {
     
     func getStationsList() async throws -> StationsList {
-        let client = СlientCreator.create()
+        let client = ClientCreator.create()
         guard let client else { return StationsList() }
         
         let service = StationsListService(
@@ -28,7 +28,7 @@ actor DataProvider: Sendable {
         transportType: String,
         hasTransfers: Bool
     ) async throws -> SearchResult {
-        let client = СlientCreator.create()
+        let client = ClientCreator.create()
         guard let client else { return SearchResult() }
         
         let service = SearchService(

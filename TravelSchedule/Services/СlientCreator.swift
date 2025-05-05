@@ -1,5 +1,5 @@
 //
-//  СlientCreator.swift
+//  ClientCreator.swift
 //  TravelSchedule
 //
 //  Created by Anastasiia on 20.03.2025.
@@ -8,7 +8,7 @@
 import Foundation
 import OpenAPIURLSession
 
-final class СlientCreator {
+final class ClientCreator {
     static func create() -> Client? {
         var url: URL?
         
