@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct FiltersView: View {
-    @EnvironmentObject var routerManager: NavigationRouter
-    @EnvironmentObject private var viewModel: ScheduleViewModel
+    @EnvironmentObject private var routerManager: NavigationRouter
+    @EnvironmentObject private var carriersViewModel: CarriersViewModel
+    @EnvironmentObject private var filtersViewModel: FiltersViewModel
     
     var body: some View {
         ZStack {
@@ -21,9 +22,9 @@ struct FiltersView: View {
                 
                 VStack(alignment: .leading, spacing: 0) {
                     ForEach(DepartureTime.allCases, id: \.self) { time in
-                        CheckBox(title: time.rawValue, selected: viewModel.departureTimes.contains(time))
+                        CheckBox(title: time.rawValue, selected: filtersViewModel.departureTimes.contains(time))
                             .onTapGesture {
-                                viewModel.select(departureTime: time)
+                                filtersViewModel.select(departureTime: time)
                             }
                     }
                 }
@@ -34,11 +35,11 @@ struct FiltersView: View {
                 VStack(alignment: .leading, spacing: 0) {
                     ForEach(HasTransfer.allCases, id: \.self) { hasTransfer in
                         RadioSelect(title: hasTransfer.rawValue,
-                                    selected: viewModel.hasTransfers && hasTransfer == .yes ||
-                                    !viewModel.hasTransfers && hasTransfer == .no
+                                    selected: filtersViewModel.hasTransfers && hasTransfer == .yes ||
+                                    !filtersViewModel.hasTransfers && hasTransfer == .no
                         )
                             .onTapGesture {
-                                viewModel.selectTransfer()
+                                filtersViewModel.toggleTransfers()
                             }
                     }
                 }
@@ -46,7 +47,8 @@ struct FiltersView: View {
                 Spacer()
                 
                 Button(action: {
-                    viewModel.filter()
+                    let filteredCarriers = filtersViewModel.filter(carriers: carriersViewModel.carriers)
+                    carriersViewModel.setFilteredCarriers(filteredCarriers)
                     routerManager.navigateBack()
                 }) {
                     Text("Применить")
@@ -65,4 +67,5 @@ struct FiltersView: View {
 
 #Preview {
     FiltersView()
+        .environmentObject(FiltersViewModel())
 }

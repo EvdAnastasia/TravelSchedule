@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 final class StoriesViewModel: ObservableObject {
     @Published var stories = StoriesMock.data
     @Published var currentStoryIndex: Int = 0

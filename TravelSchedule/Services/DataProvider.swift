@@ -7,10 +7,10 @@
 
 import Foundation
 
-final class DataProvider {
+actor DataProvider: Sendable {
     
     func getStationsList() async throws -> StationsList {
-        let client = СlientCreator.create()
+        let client = ClientCreator.create()
         guard let client else { return StationsList() }
         
         let service = StationsListService(
@@ -28,7 +28,7 @@ final class DataProvider {
         transportType: String,
         hasTransfers: Bool
     ) async throws -> SearchResult {
-        let client = СlientCreator.create()
+        let client = ClientCreator.create()
         guard let client else { return SearchResult() }
         
         let service = SearchService(

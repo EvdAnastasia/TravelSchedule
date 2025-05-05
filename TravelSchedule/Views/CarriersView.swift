@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct CarriersView: View {
-    @EnvironmentObject var routerManager: NavigationRouter
-    @EnvironmentObject private var viewModel: ScheduleViewModel
+    @EnvironmentObject private var routerManager: NavigationRouter
+    @EnvironmentObject private var scheduleViewModel: ScheduleViewModel
+    @EnvironmentObject private var filtersViewModel: FiltersViewModel
+    @EnvironmentObject private var carriersViewModel: CarriersViewModel
     
     // MARK: - Body
     
@@ -17,7 +19,7 @@ struct CarriersView: View {
         ZStack {
             Color.ypWhite.ignoresSafeArea()
             
-            switch viewModel.state {
+            switch scheduleViewModel.state {
             case .loading:
                 ProgressView()
             case .success:
@@ -33,28 +35,28 @@ struct CarriersView: View {
     private var content: some View {
         VStack(spacing: 16) {
             Group {
-                Text("\(viewModel.directionFrom.settlement?.title ?? "")" +
-                     " (\(viewModel.directionFrom.station?.title ?? "")) ") +
+                Text("\(scheduleViewModel.directionFrom.settlement?.title ?? "")" +
+                     " (\(scheduleViewModel.directionFrom.station?.title ?? "")) ") +
                 Text("\(UnicodeScalar(0x2192)!) ") +
-                Text("\(viewModel.directionTo.settlement?.title ?? "")" +
-                     " (\(viewModel.directionTo.station?.title ?? "")) ")
+                Text("\(scheduleViewModel.directionTo.settlement?.title ?? "")" +
+                     " (\(scheduleViewModel.directionTo.station?.title ?? "")) ")
             }
             .font(.system(size: 24, weight: .bold))
             
-            if !viewModel.filteredCarriers.isEmpty {
+            if !carriersViewModel.filteredCarriers.isEmpty {
                 ZStack(alignment: .bottom) {
                     ScrollView {
                         LazyVStack(spacing: 8) {
-                            ForEach(viewModel.filteredCarriers, id: \.self) { segment in
+                            ForEach(carriersViewModel.filteredCarriers, id: \.self) { segment in
                                 CarrierCardView(
                                     segmentInfo: segment,
-                                    startDate: viewModel.format(date: segment.start_date ?? "", with: "dd MMMM"),
-                                    departure: viewModel.format(date: segment.departure ?? "", with: "HH:mm"),
-                                    arrival: viewModel.format(date: segment.arrival ?? "", with: "HH:mm")
+                                    startDate: scheduleViewModel.format(date: segment.start_date ?? "", with: "dd MMMM"),
+                                    departure: scheduleViewModel.format(date: segment.departure ?? "", with: "HH:mm"),
+                                    arrival: scheduleViewModel.format(date: segment.arrival ?? "", with: "HH:mm")
                                 )
                                 .frame(height: 104)
                                 .onTapGesture {
-                                    viewModel.setCarrier(segment.thread?.carrier)
+                                    carriersViewModel.setCarrier(segment.thread?.carrier)
                                     routerManager.push(to: .carrierInfo)
                                 }
                             }
@@ -74,7 +76,7 @@ struct CarriersView: View {
                                     .foregroundStyle(.ypWhiteUniversal)
                                 Circle()
                                     .frame(width: 8, height: 8)
-                                    .foregroundStyle(viewModel.departureTimes.isEmpty && viewModel.hasTransfers ? .ypBlue : .ypRed)
+                                    .foregroundStyle(filtersViewModel.departureTimes.isEmpty && filtersViewModel.hasTransfers ? .ypBlue : .ypRed)
                             }
                             .frame(idealWidth: 343, maxWidth: .infinity, maxHeight: 60)
                         }

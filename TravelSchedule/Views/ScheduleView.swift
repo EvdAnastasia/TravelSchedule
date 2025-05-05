@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct ScheduleView: View {
-    @EnvironmentObject var routerManager: NavigationRouter
-    @EnvironmentObject private var viewModel: ScheduleViewModel
+    @EnvironmentObject private var routerManager: NavigationRouter
+    @EnvironmentObject private var scheduleViewModel: ScheduleViewModel
+    @EnvironmentObject private var carriersViewModel: CarriersViewModel
     @StateObject private var storiesViewModel = StoriesViewModel()
     
     var body: some View {
@@ -36,14 +37,14 @@ struct ScheduleView: View {
                     HStack(spacing: 16) {
                         VStack(alignment: .leading, spacing: 0) {
                             ChoosingDirectionView(
-                                path: viewModel.directionFrom,
+                                path: scheduleViewModel.directionFrom,
                                 placeholder: "Откуда"
                             )
                             .onTapGesture {
                                 routerManager.push(to: .citySelection(direction: .from))
                             }
                             ChoosingDirectionView(
-                                path: viewModel.directionTo,
+                                path: scheduleViewModel.directionTo,
                                 placeholder: "Куда"
                             )
                             .onTapGesture {
@@ -57,7 +58,7 @@ struct ScheduleView: View {
                         )
                         
                         Button {
-                            viewModel.changeDirection()
+                            scheduleViewModel.changeDirection()
                         } label: {
                             Image("Change")
                                 .frame(width: 36, height: 36)
@@ -73,7 +74,9 @@ struct ScheduleView: View {
                 
                 Button {
                     Task {
-                        await viewModel.search()
+                        let carriers = await scheduleViewModel.search()
+                        carriersViewModel.setCarriers(carriers)
+                        carriersViewModel.setFilteredCarriers(carriers)
                     }
                     routerManager.push(to: .carriers)
                 } label: {
@@ -84,7 +87,7 @@ struct ScheduleView: View {
                         .foregroundStyle(.ypWhiteUniversal)
                         .cornerRadius(16)
                 }
-                .opacity(viewModel.isSearchButtonEnabled ? 1 : 0)
+                .opacity(scheduleViewModel.isSearchButtonEnabled ? 1 : 0)
                 
                 Spacer()
             }
@@ -98,5 +101,6 @@ struct ScheduleView: View {
 #Preview {
     ScheduleView()
         .environmentObject(ScheduleViewModel())
+        .environmentObject(CarriersViewModel())
         .environmentObject(StoriesViewModel())
 }

@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct CitySelectionView: View {
-    @EnvironmentObject private var viewModel: ScheduleViewModel
-    @EnvironmentObject var routerManager: NavigationRouter
+    @EnvironmentObject private var scheduleViewModel: ScheduleViewModel
+    @EnvironmentObject private var routerManager: NavigationRouter
     @State private var searchString: String = ""
+    
     private var direction: Direction
     
     init(direction: Direction) {
@@ -18,7 +19,7 @@ struct CitySelectionView: View {
     }
     
     var searchResults: [SettlementsFromStationsList] {
-        viewModel.settlements.filter {
+        scheduleViewModel.settlements.filter {
             searchString.isEmpty || ($0.title?.contains(searchString.capitalized) ?? false)
         }
     }
@@ -29,7 +30,7 @@ struct CitySelectionView: View {
         ZStack {
             Color.ypWhite.ignoresSafeArea()
             
-            switch viewModel.state {
+            switch scheduleViewModel.state {
             case .loading:
                 ProgressView()
             case .success:
@@ -54,8 +55,8 @@ struct CitySelectionView: View {
                         ForEach(searchResults, id: \.self) { settlement in
                             ListRowView(text: settlement.title ?? "")
                                 .onTapGesture {
-                                    viewModel.setSettlement(for: direction, settlement: settlement)
-                                    viewModel.getStations(for: settlement)
+                                    scheduleViewModel.setSettlement(for: direction, settlement: settlement)
+                                    scheduleViewModel.getStations(for: settlement)
                                     routerManager.push(to: .stationSelection(direction: direction))
                                 }
                         }
